@@ -1,0 +1,81 @@
+<?php
+
+macro {
+    ·chain(
+        function,
+        ·token(T_STRING)·function,
+        ·between(
+            ·token("("),
+            ·optional(
+                ·ls(
+                    ·either(
+                        ·chain(
+                            ·optional(·ns())·enhanced_type,
+                            ·token(T_VARIABLE)·enhanced_name,
+                            ·token("="),
+                            ·chain(
+                                ·optional(·token(T_NEW))·enhanced_new,
+                                ·midrule(function ($stream) {
+                                    $index = $stream->index();
+
+                                    if (in_array(strtolower($stream->current()), ["true", "false", "null"])) {
+                                        return new \Yay\Error(null, null, $stream->last());
+                                    }
+
+                                    return new \Yay\Ast;
+                                }),
+                                ·ns()·enhanced_ns,
+                                ·optional(
+                                    ·chain(
+                                        ·token("("), ·layer(), ·token(")")
+                                    )
+                                )·enhanced_layer
+                            )·enhanced_value
+                        )·enhanced_parameter,
+                        ·chain(
+                            ·optional(·ns())·regular_type,
+                            ·token(T_VARIABLE)·regular_name,
+                            ·optional(
+                                ·chain(
+                                    ·token("="),
+                                    ·either(
+                                        ·token(T_CONSTANT_ENCAPSED_STRING),
+                                        ·token(T_LNUMBER),
+                                        ·token(T_DNUMBER),
+                                        ·token(T_STRING)
+                                    )
+                                )
+                            )·regular_value
+                        )·regular_parameter
+                    ),
+                    ·token(",")
+                )·parameter
+            ),
+            ·token(")")
+        ),
+        ·optional(
+            ·chain(
+                ·token(":"),
+                ·ns()
+            )
+        )·return_type,
+        ·between(
+            ·token("{"), ·layer()·rest, ·token("}")
+        )
+    )
+} >> {
+    function ·function(·parameter ··· (, ) { ·regular_parameter ?···{·regular_type ·regular_name ·regular_value} ·enhanced_parameter ?··· {·enhanced_type ·enhanced_name = null}}) ·return_type
+    {
+        ··trim(
+            ·parameter ··· {
+                ·enhanced_parameter ?··· {
+                    if (is_null(·enhanced_name)) {
+                        ·enhanced_name = ·enhanced_value ··· {·enhanced_new ·enhanced_ns ·enhanced_layer};
+                    }
+                }
+            }
+        )
+
+        ·rest
+    }
+}

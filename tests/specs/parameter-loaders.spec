@@ -32,6 +32,10 @@ class Fixture
     }
 }
 
+$anon = function($a = true, $b = "hello", $c = ucwords("world")) {
+    print $b . " " . $c;
+};
+
 --EXPECT--
 
 class Fixture
@@ -81,3 +85,11 @@ class Fixture
         return "working";
     }
 }
+
+$anon = function ($a =true, $b ="hello", $c = null) {
+    if (is_null($c)) {
+        $c =  ucwords("world");
+    }
+
+    print $b . " " . $c;
+};

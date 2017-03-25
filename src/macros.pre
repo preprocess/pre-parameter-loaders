@@ -3,7 +3,7 @@
 macro {
     ·chain(
         function,
-        ·token(T_STRING)·function,
+        ·optional(·token(T_STRING))·function,
         ·between(
             ·token("("),
             ·optional(
@@ -15,7 +15,7 @@ macro {
                             ·token("="),
                             ·chain(
                                 ·optional(·token(T_NEW))·enhanced_new,
-                                ·midrule(function ($stream) {
+                                ·midrule(function($stream) {
                                     $index = $stream->index();
 
                                     if (in_array(strtolower($stream->current()), ["true", "false", "null"])) {

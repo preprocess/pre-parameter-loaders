@@ -1,9 +1,3 @@
---DESCRIPTION--
-
-Test parameter loader macros
-
---GIVEN--
-
 class Fixture
 {
     public function typeHintedRegular(string $string = "typeHintedRegular")
@@ -32,11 +26,7 @@ class Fixture
     }
 }
 
-$anon = function($a = true, $b = "hello", $c = ucwords("world")) {
-    print $b . " " . $c;
-};
-
---EXPECT--
+~~~
 
 class Fixture
 {
@@ -85,6 +75,14 @@ class Fixture
         return "working";
     }
 }
+
+---
+
+$anon = function($a = true, $b = "hello", $c = ucwords("world")) {
+    print $b . " " . $c;
+};
+
+~~~
 
 $anon = function ($a =true, $b ="hello", $c = null) {
     if (is_null($c)) {

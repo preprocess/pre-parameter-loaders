@@ -66,7 +66,7 @@ macro {
 } >> {
     function ·function(·parameter ··· (, ) { ·regular_parameter ?···{·regular_type ·regular_name ·regular_value} ·enhanced_parameter ?··· {·enhanced_type ·enhanced_name = null}}) ·return_type
     {
-        ··trim(
+        ··collapse(··trim(
             ·parameter ··· {
                 ·enhanced_parameter ?··· {
                     if (is_null(·enhanced_name)) {
@@ -74,7 +74,7 @@ macro {
                     }
                 }
             }
-        )
+        ))
 
         ·rest
     }

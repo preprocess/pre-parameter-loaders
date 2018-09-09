@@ -1,21 +1,21 @@
 <?php
 
-macro {
-    ·chain(
+$(macro) {
+    $(chain(
         function,
-        ·optional(·token(T_STRING))·function,
-        ·between(
-            ·token("("),
-            ·optional(
-                ·ls(
-                    ·either(
-                        ·chain(
-                            ·optional(·ns())·enhanced_type,
-                            ·token(T_VARIABLE)·enhanced_name,
-                            ·token("="),
-                            ·chain(
-                                ·optional(·token(T_NEW))·enhanced_new,
-                                ·midrule(function($stream) {
+        optional(token(T_STRING) as function),
+        between(
+            token("("),
+            optional(
+                ls(
+                    either(
+                        chain(
+                            optional(ns() as enhancedType),
+                            token(T_VARIABLE) as enhancedName,
+                            token("="),
+                            chain(
+                                optional(token(T_NEW) as enhancedNew),
+                                midrule(function($stream) {
                                     $index = $stream->index();
 
                                     if (in_array(strtolower($stream->current()), ["true", "false", "null"])) {
@@ -24,58 +24,58 @@ macro {
 
                                     return new \Yay\Ast;
                                 }),
-                                ·ns()·enhanced_ns,
-                                ·optional(
-                                    ·chain(
-                                        ·token("("), ·layer(), ·token(")")
+                                ns() as enhancedNs,
+                                optional(
+                                    chain(
+                                        token("("), layer() as enhancedLayerValue, token(")")
                                     )
-                                )·enhanced_layer
-                            )·enhanced_value
-                        )·enhanced_parameter,
-                        ·chain(
-                            ·optional(·ns())·regular_type,
-                            ·token(T_VARIABLE)·regular_name,
-                            ·optional(
-                                ·chain(
-                                    ·token("="),
-                                    ·either(
-                                        ·token(T_CONSTANT_ENCAPSED_STRING),
-                                        ·token(T_LNUMBER),
-                                        ·token(T_DNUMBER),
-                                        ·token(T_STRING)
-                                    )
+                                ) as enhancedLayer
+                            ) as enhancedValue
+                        ) as enhancedParameter,
+                        chain(
+                            optional(ns() as regularType),
+                            token(T_VARIABLE) as regularName,
+                            optional(
+                                chain(
+                                    token("="),
+                                    either(
+                                        token(T_CONSTANT_ENCAPSED_STRING),
+                                        token(T_LNUMBER),
+                                        token(T_DNUMBER),
+                                        token(T_STRING)
+                                    ) as regularValue
                                 )
-                            )·regular_value
-                        )·regular_parameter
+                            ) as regularEq
+                        ) as regularParameter
                     ),
-                    ·token(",")
-                )·parameter
+                    token(",")
+                ) as parameter
             ),
-            ·token(")")
+            token(")")
         ),
-        ·optional(
-            ·chain(
-                ·token(":"),
-                ·ns()
+        optional(
+            chain(
+                token(":"),
+                ns()
             )
-        )·return_type,
-        ·between(
-            ·token("{"), ·layer()·rest, ·token("}")
+        ) as returnType,
+        between(
+            token("{"), layer() as rest, token("}")
         )
-    )
+    ))
 } >> {
-    function ·function(·parameter ··· (, ) { ·regular_parameter ?···{·regular_type ·regular_name ·regular_value} ·enhanced_parameter ?··· {·enhanced_type ·enhanced_name = null}}) ·return_type
+    function $(function)($(parameter ... (, ) { $(regularParameter ? ... { $(regularType) $(regularName) $(regularEq ... {= $(regularValue)}) }) $(enhancedParameter ? ... { $(enhancedType) $(enhancedName) = null }) })) $(returnType)
     {
-        ··collapse(··trim(
-            ·parameter ··· {
-                ·enhanced_parameter ?··· {
-                    if (is_null(·enhanced_name)) {
-                        ·enhanced_name = ·enhanced_value ··· {·enhanced_new ·enhanced_ns ·enhanced_layer};
-                    }
+        $(parameter ... {$$(trim(
+            $(enhancedParameter ? ... {
+                if (is_null($(enhancedName))) {
+                    $(enhancedName) = $(enhancedValue ... {$$(trim(
+                        $(enhancedNew) $$(trim( $(enhancedNs) $(enhancedLayer ... {($(enhancedLayerValue))}) ));
+                    ))})
                 }
-            }
-        ))
+            })
+        ))})
 
-        ·rest
+        $(rest)
     }
 }

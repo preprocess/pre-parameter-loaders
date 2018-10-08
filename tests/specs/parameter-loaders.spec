@@ -44,8 +44,12 @@ class Fixture
         return "working";
     }
 
-    public function multipleRegular($one = "one", $two = 2.2, $three = true, $four = null)
-    {
+    public function multipleRegular(
+        $one = "one",
+        $two = 2.2,
+        $three = true,
+        $four = null
+    ) {
         return "working";
     }
 
@@ -67,7 +71,7 @@ class Fixture
             $three = round(3.3);
         }
         if (is_null($four)) {
-            $four = new stdClass;
+            $four = new stdClass();
         }
 
         return "working";
